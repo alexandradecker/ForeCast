@@ -9,8 +9,8 @@ def add_time(participant):
 
     start = 0
     display = None
-    # for index, row in data.iterrows():
-    for index in trange(len(data.index)):
+    size = len(data.index)
+    for index in trange(size):
         if start > index:
             continue
         if data['SAMPLE_MESSAGE'][index] == 'display':
@@ -23,7 +23,7 @@ def add_time(participant):
             start = display + 1
 
             # Update time for every entry after display
-            while data['TRIAL_INDEX'][start] == trial:
+            while start < size and data['TRIAL_INDEX'][start] == trial:
                 data['Time'][start] = (start - display) / 1000
                 start += 1
 
@@ -37,6 +37,11 @@ def add_time(participant):
 if __name__ == "__main__":
     import warnings
     warnings.filterwarnings('ignore')
-    # print(add_time("01").head(120))
-    add_time("01").to_csv("eyetracking_final/" + "01" + ".csv")
-    pass
+
+    for i in trange(1, 2):
+        if i < 10:
+            participant = "0" + str(i)
+        else:
+            participant = str(i)
+        add_time(participant).to_csv(
+            "eyetracking_final/" + participant + ".csv")
