@@ -20,7 +20,7 @@ def memorability_of_image(participant, from_scratch=True):
 
 
 if __name__ == "__main__":
-    for i in trange(1, 6):
+    for i in trange(1, 5):
         if i != 1:
             memorability_of_image(str(i), False).to_csv(
                 "behavioral_final/stimulus_accuracy.csv")
