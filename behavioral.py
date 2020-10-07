@@ -17,7 +17,7 @@ def memorability_of_image(participant, from_scratch=True):
     if data.shape[0] < 2:
         df["accuracy_total"] = 0
         images["acc_rec"] = 0
-        data = pd.concat([images, df])
+        data = pd.concat([images, df], ignore_index=True)
 
     data["accuracy_total"] = data["accuracy_total"] + data["acc_rec"]
     data = data[["stimulus", "accuracy_total"]]
