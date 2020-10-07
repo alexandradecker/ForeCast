@@ -7,6 +7,7 @@ def memorability_of_image(participant, from_scratch=True):
         images = pd.read_csv("behavioral/" + participant +
                              "_behavioral.csv")[["stimulus"]]
         images['accuracy_total'] = 0
+        images['count'] = 0
     else:
         images = pd.read_csv("behavioral_final/stimulus_accuracy.csv")
 
@@ -14,13 +15,16 @@ def memorability_of_image(participant, from_scratch=True):
                      "_behavioral.csv")[["stimulus", "acc_rec"]]
 
     data = pd.merge(df, images, how="inner")
+    data["count"] += 1
     if data.shape[0] < 2:
         df["accuracy_total"] = 0
+        df["count"] = 1
         images["acc_rec"] = 0
         data = pd.concat([images, df], ignore_index=True)
 
     data["accuracy_total"] = data["accuracy_total"] + data["acc_rec"]
-    data = data[["stimulus", "accuracy_total"]]
+    data["avg_accuracy"] = data["accuracy_total"] / data["count"]
+    data = data[["stimulus", "accuracy_total", "count", "avg_accuracy"]]
 
     return data
 
