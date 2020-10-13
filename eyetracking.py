@@ -43,6 +43,10 @@ def clean_data(participant):
     return cleaned
 
 
+def time_till_first_fixation(participant):
+    pass
+
+
 if __name__ == "__main__":
     import warnings
     warnings.filterwarnings('ignore')
