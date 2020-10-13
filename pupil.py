@@ -1,26 +1,27 @@
 import pandas as pd
 from tqdm import tqdm, trange
 import pandasql as sql
+import os
 
 
 def avg_pupil_size(participant):
     data = pd.read_csv("pupil/" + participant + ".csv")
     cleaned = sql.sqldf(
-        "select max(subject), Trial, avg(Pupil) as avg_pupil from data where Time >= 1 and Time <= 2 group by Trial")
+        "select max(subject) as participant, Trial, avg(Pupil) as avg_pupil from data where Time >= 1 and Time <= 2 group by Trial")
     return cleaned
 
 
 def avg_preceding_pupil_size(participant):
     data = pd.read_csv("pupil/" + participant + ".csv")
     cleaned = sql.sqldf(
-        "select max(subject), Trial, avg(Pupil) as avg_preceding_pupil from data where Time >= -3 and Time <= 0 group by Trial")
+        "select max(subject) as participant, Trial, avg(Pupil) as avg_preceding_pupil from data where Time >= -3 and Time <= 0 group by Trial")
     return cleaned
 
 
 def max_pupil_size(participant):
     data = pd.read_csv("pupil/" + participant + ".csv")
     cleaned = sql.sqldf(
-        "select max(subject), Trial, max(Pupil) as max_pupil from data where Time >= 0.5 and Time <= 2 group by Trial")
+        "select max(subject) as participant, Trial, max(Pupil) as max_pupil from data where Time >= 0.5 and Time <= 2 group by Trial")
     cleaned["Time"] = "NULL"
 
     sizeCleaned = len(cleaned.index)
@@ -38,7 +39,32 @@ def max_pupil_size(participant):
     return cleaned
 
 
+def merge(participant):
+    avgPupilSize = pd.read_csv(
+        "pupil_final/" + participant + "_AvgPupilSize.csv")
+    avgPrecedingPupilSize = pd.read_csv(
+        "pupil_final/" + participant + "_AvgPrecedingPupilSize.csv")
+    maxPupilSize = pd.read_csv(
+        "pupil_final/" + participant + "_MaxPupilSize.csv")
+
+    merge = sql.sqldf(
+        "select participant, Trial, max_pupil, Time, avg_preceding_pupil, avg_pupil from avgPupilSize natural join avgPrecedingPupilSize natural join maxPupilSize")
+    merge["change_pupil"] = merge["avg_pupil"] - merge["avg_preceding_pupil"]
+
+    return merge
+
+
+def delete_non_merged():
+    os.chdir("pupil_final")
+    for file in os.listdir():
+        if not file.endswith("Merged.csv"):
+            os.remove(file)
+
+
 if __name__ == '__main__':
+    import warnings
+    warnings.filterwarnings('ignore')
+
     for i in trange(1, 2):
         if i < 10:
             participant = "0" + str(i)
@@ -54,4 +80,7 @@ if __name__ == '__main__':
         max_pupil_size(participant).to_csv("pupil_final/" +
                                            participant + "_MaxPupilSize.csv")
 
-    pass
+        merge(participant).to_csv("pupil_final/" +
+                                  participant + "_Merged.csv")
+
+    delete_non_merged()
