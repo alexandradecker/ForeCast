@@ -48,7 +48,7 @@ def merge(participant):
         "pupil_final/" + participant + "_MaxPupilSize.csv")
 
     merge = sql.sqldf(
-        "select participant, Trial, max_pupil, Time, avg_preceding_pupil, avg_pupil from avgPupilSize natural join avgPrecedingPupilSize natural join maxPupilSize")
+        "select participant, Trial as trial_index, max_pupil, Time, avg_preceding_pupil, avg_pupil from avgPupilSize natural join avgPrecedingPupilSize natural join maxPupilSize")
     merge["change_pupil"] = merge["avg_pupil"] - merge["avg_preceding_pupil"]
 
     return merge

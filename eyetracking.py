@@ -39,7 +39,7 @@ def clean_data(participant):
     data = pd.read_csv("eyetracking/" + participant +
                        "_encoding.csv_rm_cols.csv")
     cleaned = sql.sqldf(
-        "select max(participant), TRIAL_INDEX, max(RIGHT_FIX_INDEX), avg(RIGHT_IN_BLINK), avg(RIGHT_IN_SACCADE), avg(RIGHT_PUPIL_SIZE) from data group by trial_index")
+        "select max(participant) as participant, TRIAL_INDEX as trial_index, max(RIGHT_FIX_INDEX), avg(RIGHT_IN_BLINK), avg(RIGHT_IN_SACCADE), avg(RIGHT_PUPIL_SIZE) from data group by trial_index")
     return cleaned
 
 
