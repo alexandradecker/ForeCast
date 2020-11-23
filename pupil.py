@@ -65,22 +65,25 @@ if __name__ == '__main__':
     import warnings
     warnings.filterwarnings('ignore')
 
-    for i in trange(1, 2):
-        if i < 10:
-            participant = "0" + str(i)
-        else:
-            participant = str(i)
+    for i in trange(1, 100):
+        try:
+            if i < 10:
+                participant = "0" + str(i)
+            else:
+                participant = str(i)
 
-        avg_pupil_size(participant).to_csv(
-            "pupil_final/" + participant + "_AvgPupilSize.csv")
+            avg_pupil_size(participant).to_csv(
+                "pupil_final/" + participant + "_AvgPupilSize.csv")
 
-        avg_preceding_pupil_size(participant).to_csv(
-            "pupil_final/" + participant + "_AvgPrecedingPupilSize.csv")
+            avg_preceding_pupil_size(participant).to_csv(
+                "pupil_final/" + participant + "_AvgPrecedingPupilSize.csv")
 
-        max_pupil_size(participant).to_csv("pupil_final/" +
-                                           participant + "_MaxPupilSize.csv")
+            max_pupil_size(participant).to_csv("pupil_final/" +
+                                               participant + "_MaxPupilSize.csv")
 
-        merge(participant).to_csv("pupil_final/" +
-                                  participant + "_Merged.csv")
+            merge(participant).to_csv("pupil_final/" +
+                                      participant + "_Merged.csv")
+        except Exception as e:
+            print(e)
 
     delete_non_merged()

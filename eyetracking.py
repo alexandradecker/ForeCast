@@ -61,10 +61,14 @@ if __name__ == "__main__":
     #         "eyetracking_final/" + participant + ".csv")
 
     # This is my understanding of cleaned data
-    for i in trange(1, 2):
-        if i < 10:
-            participant = "0" + str(i)
-        else:
-            participant = str(i)
-        clean_data(participant).to_csv(
-            "eyetracking_final/" + participant + "_cleaned.csv")
+
+    try:
+        for i in trange(1, 100):
+            if i < 10:
+                participant = "0" + str(i)
+            else:
+                participant = str(i)
+            clean_data(participant).to_csv(
+                "eyetracking_final/" + participant + "_cleaned.csv")
+    except Exception as e:
+        print(e)
