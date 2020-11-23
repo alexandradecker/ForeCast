@@ -47,7 +47,22 @@ def time_till_first_fixation(participant):
     pass
 
 
+def work(i):
+    try:
+        if i < 10:
+            participant = "0" + str(i)
+        else:
+            participant = str(i)
+
+        clean_data(participant).to_csv(
+            "eyetracking_final/" + participant + "_cleaned.csv")
+    except Exception as e:
+        print(e)
+
+
 if __name__ == "__main__":
+    import multiprocessing
+    from pqdm.processes import pqdm
     import warnings
     warnings.filterwarnings('ignore')
 
@@ -62,13 +77,5 @@ if __name__ == "__main__":
 
     # This is my understanding of cleaned data
 
-    try:
-        for i in trange(1, 100):
-            if i < 10:
-                participant = "0" + str(i)
-            else:
-                participant = str(i)
-            clean_data(participant).to_csv(
-                "eyetracking_final/" + participant + "_cleaned.csv")
-    except Exception as e:
-        print(e)
+    jobs = multiprocessing.cpu_count()
+    pqdm(range(1, 100), work, n_jobs=jobs)

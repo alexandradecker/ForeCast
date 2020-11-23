@@ -25,8 +25,8 @@ def mergeBigTable(i):
 
 if __name__ == "__main__":
 
-    try:
-        for i in trange(1, 100):
+    for i in trange(1, 100):
+        try:
             mergeBigTable(i)
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
