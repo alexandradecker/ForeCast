@@ -23,10 +23,20 @@ def mergeBigTable(i):
         "bigTable/" + str(i) + ".csv")
 
 
+def work(i):
+    try:
+        mergeBigTable(i)
+
+    except Exception as e:
+        print(e)
+
+
 if __name__ == "__main__":
 
-    for i in trange(1, 100):
-        try:
-            mergeBigTable(i)
-        except Exception as e:
-            print(e)
+    import multiprocessing
+    from pqdm.processes import pqdm
+    import warnings
+    warnings.filterwarnings('ignore')
+
+    jobs = multiprocessing.cpu_count()
+    pqdm(range(1, 100), work, n_jobs=jobs)

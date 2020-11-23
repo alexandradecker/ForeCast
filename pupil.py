@@ -61,29 +61,35 @@ def delete_non_merged():
             os.remove(file)
 
 
+def work(i):
+    try:
+        if i < 10:
+            participant = "0" + str(i)
+        else:
+            participant = str(i)
+
+        avg_pupil_size(participant).to_csv(
+            "pupil_final/" + participant + "_AvgPupilSize.csv")
+
+        avg_preceding_pupil_size(participant).to_csv(
+            "pupil_final/" + participant + "_AvgPrecedingPupilSize.csv")
+
+        max_pupil_size(participant).to_csv("pupil_final/" +
+                                           participant + "_MaxPupilSize.csv")
+
+        merge(participant).to_csv("pupil_final/" +
+                                  participant + "_Merged.csv")
+    except Exception as e:
+        print(e)
+
+
 if __name__ == '__main__':
+    import multiprocessing
+    from pqdm.processes import pqdm
     import warnings
     warnings.filterwarnings('ignore')
 
-    for i in trange(1, 100):
-        try:
-            if i < 10:
-                participant = "0" + str(i)
-            else:
-                participant = str(i)
-
-            avg_pupil_size(participant).to_csv(
-                "pupil_final/" + participant + "_AvgPupilSize.csv")
-
-            avg_preceding_pupil_size(participant).to_csv(
-                "pupil_final/" + participant + "_AvgPrecedingPupilSize.csv")
-
-            max_pupil_size(participant).to_csv("pupil_final/" +
-                                               participant + "_MaxPupilSize.csv")
-
-            merge(participant).to_csv("pupil_final/" +
-                                      participant + "_Merged.csv")
-        except Exception as e:
-            print(e)
+    jobs = multiprocessing.cpu_count()
+    pqdm(range(1, 100), work, n_jobs=jobs)
 
     delete_non_merged()
