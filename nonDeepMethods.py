@@ -10,8 +10,8 @@ import os
 
 methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
 participant = 1
-method = methods[1]
-test = False
+method = methods[4]
+test = True
 
 x_train, x_test, y_train, y_test, _ = my_train_test_split(participant)
 
@@ -59,7 +59,7 @@ elif method == "random_forest":
     name = 'models/NonDeep/randomForest{}.sav'.format(participant)
 
     if not test:
-        model = RandomForestClassifier(n_estimators=49, n_jobs=os.cpu_count())
+        model = RandomForestClassifier(n_estimators=25, n_jobs=os.cpu_count())
         model.fit(x_train, y_train)
 
         pickle.dump(model, open(
@@ -113,142 +113,135 @@ elif method == "random_forest":
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-# elif method == "adaboost":
+elif method == "adaboost":
 
-#     if not test:
-#         model = AdaBoostRegressor(n_estimators=935, random_state=6)
-#         model.fit(x_train, y_train)
+    name = 'models/NonDeep/adaboost{}.sav'.format(participant)
 
-#         pickle.dump(model, open(
-#             name, 'wb'))
+    if not test:
+        model = AdaBoostClassifier(n_estimators=97, random_state=6)
+        model.fit(x_train, y_train)
 
-#     else:
-#         model = pickle.load(
-#             open(name, 'rb'))
-#         predictions = model.predict(x_test)
-#         loss_array = (abs(predictions - y_test) / y_test) * 100
+        pickle.dump(model, open(
+            name, 'wb'))
 
-#         loss = sum(loss_array)/len(loss_array)
+        visualise = input("graph tree values? y/n: ")
 
-#         print("Prediction is within {}% of actual value".format(loss))
+        if visualise.lower().strip() == 'y' or visualise.lower().strip() == 'yes':
+            acc = []
+            for i in trange(1, 1000):
+                model = AdaBoostClassifier(n_estimators=i, random_state=6)
+                model.fit(x_train, y_train)
+                predictions = model.predict(x_test)
+                loss_array = abs(predictions - y_test)
+                total = len(loss_array)
+                incorrect = sum(loss_array)
+                accuracy = (total - incorrect) / total
+                acc.append(accuracy)
 
-#     visualise = input("graph tree values? y/n: ")
+            acc = np.array(acc)
+            with open("models/NonDeep/acc_percentage_adaboost.txt", "w") as file:
+                np.savetxt(file, acc)
 
-#     if visualise.lower().strip() == 'y' or visualise.lower().strip() == 'yes':
-#         loss_percentage = []
-#         num_trees = [x for x in range(1, 1000)]
-#         for i in trange(1, 1000):
-#             model = AdaBoostRegressor(n_estimators=i)
-#             model.fit(x_train, y_train)
-#             predictions = model.predict(x_test)
-#             loss_array = (abs(predictions - y_test) / y_test) * 100
+            plt.plot(range(1, 1000), acc)
+            plt.show()
+        else:
+            try:
+                vals = np.loadtxt(
+                    "models/NonDeep/acc_percentage_adaboost.txt", dtype=np.float64)
+                print("Optimal Number of Trees: {}".format(np.argmax(vals) + 1))
+            except Exception as e:
+                print(e)
 
-#             loss = sum(loss_array)/len(loss_array)
+    else:
+        model = pickle.load(
+            open(name, 'rb'))
+        predictions = model.predict(x_test)
+        loss_array = abs(predictions - y_test)
 
-#             loss_percentage.append(loss)
+        total = len(loss_array)
 
-#         loss_percentage = np.array(loss_percentage)
-#         num_trees = np.array(num_trees)
-#         with open("loss_percentage_adaboost.txt", "w") as file:
-#             np.savetxt(file, loss_percentage)
+        incorrect = sum(loss_array)
+        accuracy = (total - incorrect) / total
 
-#         with open("num_trees_adaboost.txt", "w") as file:
-#             np.savetxt(file, num_trees)
+        print("Accuracy = {}%".format(accuracy))
 
-#         plt.plot(num_trees, loss_percentage)
-#         plt.show()
-
-#     # x = np.loadtxt("loss_percentage_adaboost.txt")
-#     # y = np.loadtxt("num_trees_adaboost.txt")
-#     # print(y[np.argmin(x)])
-
-# # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-# # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-# # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-
-# elif method == "xgboost":
-
-#     if not test:
-#         model = XGBRegressor(n_jobs=os.cpu_count(),
-#                              random_state=6)
-#         model.fit(x_train, y_train)
-
-#         pickle.dump(model, open(
-#             name, 'wb'))
-
-#     else:
-#         model = pickle.load(
-#             open(name, 'rb'))
-#         predictions = model.predict(x_test)
-#         loss_array = (abs(predictions - y_test) / y_test) * 100
-
-#         loss = sum(loss_array)/len(loss_array)
-
-#         print("Prediction is within {}% of actual value".format(loss))
 
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-# elif method == "all":
-#     # use all and average results
-#     if pred_num == 0:
-#         xgboostname = 'models/NonDeep/xgBoostRegressor.sav'
-#         adaboostname = 'models/NonDeep/adaBoostRegressor.sav'
-#         randomforestname = 'models/NonDeep/randomForestRegressor.sav'
-#         treename = 'models/NonDeep/decisionTreeRegressor.sav'
 
-#     elif pred_num == 1:
-#         xgboostname = 'models/NonDeep/xgBoostRegressorHigh.sav'
-#         adaboostname = 'models/NonDeep/adaBoostRegressorHigh.sav'
-#         randomforestname = 'models/NonDeep/randomForestRegressorHigh.sav'
-#         treename = 'models/NonDeep/decisionTreeRegressorHigh.sav'
+elif method == "xgboost":
 
-#     elif pred_num == 2:
-#         xgboostname = 'models/NonDeep/xgBoostRegressorLow.sav'
-#         adaboostname = 'models/NonDeep/adaBoostRegressorLow.sav'
-#         randomforestname = 'models/NonDeep/randomForestRegressorLow.sav'
-#         treename = 'models/NonDeep/decisionTreeRegressorLow.sav'
+    name = 'models/NonDeep/xgboost{}.sav'.format(participant)
 
-#     elif pred_num == 3:
-#         xgboostname = 'models/NonDeep/xgBoostRegressorClose.sav'
-#         adaboostname = 'models/NonDeep/adaBoostRegressorClose.sav'
-#         randomforestname = 'models/NonDeep/randomForestRegressorClose.sav'
-#         treename = 'models/NonDeep/decisionTreeRegressorClose.sav'
+    if not test:
+        model = XGBClassifier(n_jobs=os.cpu_count(),
+                              random_state=6)
+        model.fit(x_train, y_train)
 
-#     elif pred_num == 4:
-#         xgboostname = 'models/NonDeep/xgBoostRegressorAdjClose.sav'
-#         adaboostname = 'models/NonDeep/adaBoostRegressorAdjClose.sav'
-#         randomforestname = 'models/NonDeep/randomForestRegressorAdjClose.sav'
-#         treename = 'models/NonDeep/decisionTreeRegressorAdjClose.sav'
+        pickle.dump(model, open(
+            name, 'wb'))
 
-#     if not test:
-#         print("Train each model separately, then test here!")
+    else:
+        model = pickle.load(
+            open(name, 'rb'))
+        predictions = model.predict(x_test)
+        loss_array = abs(predictions - y_test)
 
-#     else:
-#         xgboost = pickle.load(
-#             open(xgboostname, 'rb'))
-#         xgboost_predictions = xgboost.predict(x_test)
+        total = len(loss_array)
 
-#         adaboost = pickle.load(
-#             open(adaboostname, 'rb'))
-#         adaboost_predictions = adaboost.predict(x_test)
+        incorrect = sum(loss_array)
+        accuracy = (total - incorrect) / total
 
-#         randomforest = pickle.load(
-#             open(randomforestname, 'rb'))
-#         randomforest_predictions = randomforest.predict(x_test)
+        print("Accuracy = {}%".format(accuracy))
 
-#         tree = pickle.load(
-#             open(treename, 'rb'))
-#         tree_predictions = tree.predict(x_test)
+# # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+# # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+# # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-#         predictions = xgboost_predictions + adaboost_predictions + \
-#             randomforest_predictions + tree_predictions
-#         predictions /= 4
+elif method == "all":
+    # use all and average results
 
-#         loss_array = (abs(predictions - y_test) / y_test) * 100
+    xgboostname = 'models/NonDeep/xgboost{}.sav'.format(participant)
+    adaboostname = 'models/NonDeep/adaboost{}.sav'.format(participant)
+    randomforestname = 'models/NonDeep/randomForest{}.sav'.format(participant)
+    treename = 'models/NonDeep/decisionTree{}.sav'.format(participant)
 
-#         loss = sum(loss_array)/len(loss_array)
+    if not test:
+        print("Train each model separately, then test here!")
 
-#         print("Prediction is within {}% of actual value".format(loss))
+    else:
+        xgboost = pickle.load(
+            open(xgboostname, 'rb'))
+        xgboost_predictions = xgboost.predict(x_test)
+
+        adaboost = pickle.load(
+            open(adaboostname, 'rb'))
+        adaboost_predictions = adaboost.predict(x_test)
+
+        randomforest = pickle.load(
+            open(randomforestname, 'rb'))
+        randomforest_predictions = randomforest.predict(x_test)
+
+        tree = pickle.load(
+            open(treename, 'rb'))
+        tree_predictions = tree.predict(x_test)
+
+        predictions = xgboost_predictions + adaboost_predictions + \
+            randomforest_predictions + tree_predictions
+
+        for i in range(len(predictions)):
+            if predictions[i] >= 2:
+                predictions[i] = 1
+            else:
+                predictions[i] = 0
+
+        loss_array = abs(predictions - y_test)
+
+        total = len(loss_array)
+
+        incorrect = sum(loss_array)
+        accuracy = (total - incorrect) / total
+
+        print("Accuracy = {}%".format(accuracy))
