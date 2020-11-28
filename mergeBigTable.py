@@ -31,6 +31,23 @@ def work(i):
         print(e)
 
 
+def addMeanResponseTime(participant):
+    try:
+        num = str(participant)
+        table = pd.read_csv("bigTable/" + num + ".csv")
+        total_pupil_size = table["avg_pupil"].sum()
+        num_rows = table["avg_pupil"].shape[0]
+        avg_pupil_size = total_pupil_size / num_rows
+        pupil_deviation = table["avg_pupil"] - avg_pupil_size
+        # pd.concat([table, pupil_deviation], axis=1, ignore_index=True)
+        # table = table[table.columns.tolist()[1:]]
+        table["pupil_deviation"] = pupil_deviation
+
+        table.to_csv("bigTable/" + num + ".csv")
+    except Exception as e:
+        print(e)
+
+
 if __name__ == "__main__":
 
     import multiprocessing
@@ -40,3 +57,5 @@ if __name__ == "__main__":
 
     jobs = multiprocessing.cpu_count()
     pqdm(range(1, 100), work, n_jobs=jobs)
+    pqdm(range(1, 100), addMeanResponseTime, n_jobs=jobs)
+    pass
