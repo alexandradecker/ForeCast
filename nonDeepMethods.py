@@ -10,7 +10,7 @@ import os
 
 methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
 participant = None
-method = methods[1]
+method = methods[2]
 test = False
 
 x_train, x_test, y_train, y_test, _ = my_train_test_split(participant)
