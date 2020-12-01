@@ -10,7 +10,7 @@ import os
 
 methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
 participant = None
-method = methods[1]
+method = methods[3]
 test = False
 
 x_train, x_test, y_train, y_test, _ = my_train_test_split(participant)
@@ -59,7 +59,7 @@ elif method == "random_forest":
     name = 'models/NonDeep/randomForest{}.sav'.format(participant)
 
     if not test:
-        model = RandomForestClassifier(n_estimators=3, n_jobs=os.cpu_count())
+        model = RandomForestClassifier(n_estimators=7, n_jobs=os.cpu_count())
         model.fit(x_train, y_train)
 
         pickle.dump(model, open(
