@@ -59,7 +59,7 @@ elif method == "random_forest":
     name = 'models/NonDeep/randomForest{}.sav'.format(participant)
 
     if not test:
-        model = RandomForestClassifier(n_estimators=3, n_jobs=os.cpu_count())
+        model = RandomForestClassifier(n_estimators=7, n_jobs=os.cpu_count())
         model.fit(x_train, y_train)
 
         pickle.dump(model, open(
