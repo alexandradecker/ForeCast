@@ -65,6 +65,19 @@ def addResponseDeviation(participant):
         print(e)
 
 
+def aggregateBigTables():
+    table = pd.read_csv("bigTable/1.csv")
+
+    for i in range(2, 100):
+        try:
+            next_ = pd.read_csv("bigTable/{}.csv".format(i))
+            table.append(next_)
+        except Exception as e:
+            print(e)
+
+    table.to_csv("bigTable/allParticipantsTable.csv")
+
+
 if __name__ == "__main__":
 
     import multiprocessing
@@ -73,7 +86,8 @@ if __name__ == "__main__":
     warnings.filterwarnings('ignore')
 
     jobs = multiprocessing.cpu_count()
-    pqdm(range(1, 100), work, n_jobs=jobs)
-    pqdm(range(1, 100), addPupilDeviation, n_jobs=jobs)
-    pqdm(range(1, 100), addResponseDeviation, n_jobs=jobs)
+    # pqdm(range(1, 100), work, n_jobs=jobs)
+    # pqdm(range(1, 100), addPupilDeviation, n_jobs=jobs)
+    # pqdm(range(1, 100), addResponseDeviation, n_jobs=jobs)
+    # aggregateBigTables()
     pass
