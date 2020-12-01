@@ -11,7 +11,7 @@ import os
 methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
 participant = None
 method = methods[2]
-test = False
+test = True
 
 x_train, x_test, y_train, y_test, _ = my_train_test_split(participant)
 
@@ -118,7 +118,7 @@ elif method == "adaboost":
     name = 'models/NonDeep/adaboost{}.sav'.format(participant)
 
     if not test:
-        model = AdaBoostClassifier(n_estimators=97, random_state=6)
+        model = AdaBoostClassifier(n_estimators=16, random_state=6)
         model.fit(x_train, y_train)
 
         pickle.dump(model, open(
