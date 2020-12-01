@@ -6,8 +6,11 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 
-def my_train_test_split(participant):
-    df = pd.read_csv("bigTable/"+str(participant)+".csv")
+def my_train_test_split(participant=None):
+    if participant is None:
+        df = pd.read_csv("bigTable/allParticipantsTable.csv")
+    else:
+        df = pd.read_csv("bigTable/"+str(participant)+".csv")
     df = df[['max(RIGHT_FIX_INDEX)', 'avg(RIGHT_IN_BLINK)', 'avg(RIGHT_IN_SACCADE)', 'avg(RIGHT_PUPIL_SIZE)', 'max_pupil', 'avg_preceding_pupil', 'avg_pupil', 'change_pupil',
              'rt', 'stimnum', 'acc', 'rtResidual', 'rtResidualC', 'rt_rec', 'trialno_rec', 'ratingConfidence', 'pupil_deviation', 'rt_deviation', 'acc_rec']]
     df.dropna(inplace=True)

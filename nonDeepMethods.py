@@ -9,9 +9,9 @@ import pickle
 import os
 
 methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
-participant = 1
+participant = None
 method = methods[4]
-test = True
+test = False
 
 x_train, x_test, y_train, y_test, _ = my_train_test_split(participant)
 
