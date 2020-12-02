@@ -45,7 +45,7 @@ class CNN(nn.Module):
         self._linear_dim = np.prod(fake2[0].shape)
 
         self.final = nn.Sequential(
-            nn.Linear(self._linear_dim, args.output_dim), args.norm(args.output_dim), args.activation())
+            nn.Linear(self._linear_dim, args.output_dim), args.norm(args.output_dim), nn.Sigmoid())
 
     def forward(self, x):
         x = self.linear_layers(x)

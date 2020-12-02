@@ -5,9 +5,8 @@ from torchvision import transforms
 
 class MyDataset(Dataset):
 
-    def __init__(self, args, flag=0):
-        self.x_train, self.x_test, self.y_train, self.y_test, _ = my_train_test_split(
-            symbol=args.symbol, flag=flag)
+    def __init__(self, args):
+        self.x_train, self.x_test, self.y_train, self.y_test, _ = my_train_test_split(args.participant)
         self.args = args
 
     def __len__(self):
@@ -21,8 +20,8 @@ class MyDataset(Dataset):
         return self.x_test[idx], self.y_test[idx]
 
 
-def get_data_loader(args, flag=0):
-    data_set = MyDataset(args, flag)
+def get_data_loader(args):
+    data_set = MyDataset(args)
     dataloader = DataLoader(data_set, batch_size=args.batch_size, shuffle=True)
     return dataloader
 
@@ -49,7 +48,7 @@ if __name__ == '__main__':
         'save_path': "/content/GAN_Style_Transfer/Models",
         'use_wandb': False,
         'dropout': False,
-        'symbol': "MFC",
+        'participant': None,
         'decay': False,
         'test': False
     }

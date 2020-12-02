@@ -21,7 +21,7 @@ class MLP(nn.Module):
                 self.layers.append(
                     nn.Linear(args.perceptrons_per_layer, args.output_dim))
                 self.layers.append(args.norm(args.output_dim))
-                self.layers.append(args.activation())
+                self.layers.append(nn.Sigmoid())
                 if args.dropout:
                     self.layers.append(nn.Dropout(args.dropout))
             else:

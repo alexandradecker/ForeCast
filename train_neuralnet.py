@@ -8,13 +8,7 @@ from dataloader import get_data_loader, MyDataset
 
 def train(args, device, wandb=None):
 
-    # FLAGS:
-    # 0: All
-    # 1: High
-    # 2: Low
-    # 3: Close
-    # 4: Adj Close
-    full_data = get_data_loader(args, flag=0)
+    full_data = get_data_loader(args)
 
     if args.model_type == "CNN":
         from CNN import CNN
@@ -47,16 +41,9 @@ def train(args, device, wandb=None):
         total_loss = 0.0
         total_data = 0
 
-        # if args.decay and epoch > 3499:
-        #     lr = args.learning_rate - \
-        #         ((args.learning_rate / 6500) * (10000 - epoch))
-        if args.decay and epoch > 800:
-            if epoch > 3000:
-                lr = 0.0000005
-            elif epoch > 2000:
-                lr = 0.000005
-            else:
-                lr = 0.00003
+        #Different levels of lr decay
+        if args.decay and epoch > 5000:
+            lr = args.learning_rate - (args.learning_rate/5000) * (epoch-5000)
             for l in range(len(optimiser.param_groups)):
                 optimiser.param_groups[l]['lr'] = lr
 
@@ -70,6 +57,9 @@ def train(args, device, wandb=None):
             optimiser.step()
 
             total_loss += loss.item()
+
+            del x
+            del y
 
         avg_loss = total_loss / total_data
         if args.use_wandb:
@@ -93,33 +83,34 @@ if __name__ == '__main__':
     import os
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print("Device: {}".format(device))
 
     args = AttrDict()
     args_dict = {
         'learning_rate': 0.0001,
-        'batch_size': 16,
+        'batch_size': 8,
         'num_epochs': 10000,
-        'input_dim': 17,
-        'output_dim': 4,
-        'num_layers': 15,
+        'input_dim': 11,
+        'output_dim': 1,
+        'num_layers': 5,
         'num_conv_layers': 6,  # num of convolution layers will be 1 less than this
         'conv_channels': [1, 2, 4, 8, 16, 1],  # length same as number above
-        'perceptrons_per_layer': 25,
+        'perceptrons_per_layer': 15,
         'perceptrons_in_conv_layers': 35,
         'res_channel': 64,
-        'num_residual_layers': 6,
+        'num_residual_layers': 0,
         'load_models': False,
-        'model_path': "/content/model100.pt",
+        'model_path': "models/MLP/model2020-12-02 11:39:22.099820.pt",
         'activation': nn.ReLU,
         'norm': nn.BatchNorm1d,
         'loss_function': nn.MSELoss,
         'save_path': "models/MLP",
         'use_wandb': False,
         'dropout': False,
-        'symbol': "MFC",
         'decay': True,
         'test': False,
-        'model_type': "LSTM",
+        'model_type': "MLP",
+        'participant': None,
         'device': device
     }
     args.update(args_dict)

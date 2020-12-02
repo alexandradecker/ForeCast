@@ -14,7 +14,7 @@ class LSTM(nn.Module):
         self.args = args
         self.lstm = nn.LSTM(
             input_size=args.input_dim, hidden_size=args.perceptrons_per_layer, num_layers=args.num_layers, bidirectional=False, batch_first=True)
-        self.linear = nn.Linear(args.perceptrons_per_layer, args.output_dim)
+        self.linear = nn.Sequential(nn.Linear(args.perceptrons_per_layer, args.output_dim), nn.Sigmoid())
 
     def forward(self, x):
         x = x.reshape(1, x.shape[0], x.shape[1])
