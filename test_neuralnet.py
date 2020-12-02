@@ -64,23 +64,25 @@ if __name__ == '__main__':
         'num_conv_layers': 6,  # num of convolution layers will be 1 less than this
         'conv_channels': [1, 2, 4, 8, 16, 1],  # length same as number above
         'perceptrons_per_layer': 10,
-        'perceptrons_in_conv_layers': 35,
+        'perceptrons_in_conv_layers': 10,
         'res_channel': 64,
         'num_residual_layers': 0,
         'load_models': False,
-        'model_path': "models/MLP/model2020-12-02 12:04:12.348098.pt",
+        'model_path': "models/CNN/model2020-12-02 12:04:12.348098.pt",
         'activation': nn.ReLU,
         'norm': nn.BatchNorm1d,
         'loss_function': nn.MSELoss,
-        'save_path': "models/MLP",
+        'save_path': "models/CNN",
         'use_wandb': False,
         'dropout': False,
         'decay': True,
         'test': False,
-        'model_type': "MLP",
+        'model_type': "CNN",
         'participant': None,
         'device': device
     }
     args.update(args_dict)
 
     print("Accuracy is {}".format(test(args, device)))
+    with open(args.model_path[:-3] + ".txt", 'w') as file:
+        file.write(str(args_dict))
