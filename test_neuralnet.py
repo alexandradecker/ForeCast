@@ -68,7 +68,7 @@ if __name__ == '__main__':
         'res_channel': 64,
         'num_residual_layers': 0,
         'load_models': False,
-        'model_path': "models/CNN/model2020-12-02 12:04:12.348098.pt",
+        'model_path': "models/CNN/model2020-12-02 12:56:39.498114.pt",
         'activation': nn.ReLU,
         'norm': nn.BatchNorm1d,
         'loss_function': nn.MSELoss,
