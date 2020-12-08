@@ -9,11 +9,12 @@ import pickle
 import os
 
 methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
-participant = None
+participant = 1
+teston = 1
 method = methods[2]
 test = True
 
-x_train, x_test, y_train, y_test, _ = my_train_test_split(participant)
+x_train, x_test, y_train, y_test, _ = my_train_test_split(teston)
 
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -48,7 +49,7 @@ if method == "decision_tree":
         incorrect = sum(loss_array)
         accuracy = (total - incorrect) / total
 
-        print("Accuracy = {}%".format(accuracy))
+        print("Accuracy = {}%".format(accuracy*100))
 
 
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -69,7 +70,7 @@ elif method == "random_forest":
         if visualise.lower().strip() == 'y' or visualise.lower().strip() == 'yes':
 
             acc = []
-            for i in trange(1, 1000):
+            for i in trange(1, 100):
                 model = RandomForestClassifier(
                     n_estimators=i, n_jobs=os.cpu_count())
                 model.fit(x_train, y_train)
@@ -87,7 +88,7 @@ elif method == "random_forest":
             with open("models/NonDeep/acc_percentage_randomforest.txt", "w") as file:
                 np.savetxt(file, acc)
 
-            plt.plot(range(1, 1000), acc)
+            plt.plot(range(1, 100), acc)
             plt.show()
         else:
             try:
@@ -107,7 +108,7 @@ elif method == "random_forest":
         incorrect = sum(loss_array)
         accuracy = (total - incorrect) / total
 
-        print("Accuracy = {}%".format(accuracy))
+        print("Accuracy = {}%".format(accuracy*100))
 
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -118,7 +119,7 @@ elif method == "adaboost":
     name = 'models/NonDeep/adaboost{}.sav'.format(participant)
 
     if not test:
-        model = AdaBoostClassifier(n_estimators=16, random_state=6)
+        model = AdaBoostClassifier(n_estimators=7, random_state=6)
         model.fit(x_train, y_train)
 
         pickle.dump(model, open(
@@ -128,7 +129,7 @@ elif method == "adaboost":
 
         if visualise.lower().strip() == 'y' or visualise.lower().strip() == 'yes':
             acc = []
-            for i in trange(1, 1000):
+            for i in trange(1, 100):
                 model = AdaBoostClassifier(n_estimators=i, random_state=6)
                 model.fit(x_train, y_train)
                 predictions = model.predict(x_test)
@@ -142,7 +143,7 @@ elif method == "adaboost":
             with open("models/NonDeep/acc_percentage_adaboost.txt", "w") as file:
                 np.savetxt(file, acc)
 
-            plt.plot(range(1, 1000), acc)
+            plt.plot(range(1, 100), acc)
             plt.show()
         else:
             try:
@@ -163,7 +164,7 @@ elif method == "adaboost":
         incorrect = sum(loss_array)
         accuracy = (total - incorrect) / total
 
-        print("Accuracy = {}%".format(accuracy))
+        print("Accuracy = {}%".format(accuracy*100))
 
 
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -194,7 +195,7 @@ elif method == "xgboost":
         incorrect = sum(loss_array)
         accuracy = (total - incorrect) / total
 
-        print("Accuracy = {}%".format(accuracy))
+        print("Accuracy = {}%".format(accuracy*100))
 
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -244,4 +245,4 @@ elif method == "all":
         incorrect = sum(loss_array)
         accuracy = (total - incorrect) / total
 
-        print("Accuracy = {}%".format(accuracy))
+        print("Accuracy = {}%".format(accuracy*100))
