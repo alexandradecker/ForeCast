@@ -1,7 +1,8 @@
 from train_test_split import my_train_test_split
 import numpy as np
 from tqdm import tqdm, trange
-from sklearn import tree
+# from sklearn import tree
+import sklearn
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from xgboost import XGBClassifier
 import matplotlib.pyplot as plt
@@ -11,8 +12,8 @@ import os
 methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
 participant_ = 1
 teston_ = 49
-method_ = methods[4]
-test_ = True
+method_ = methods[0]
+test_ = False
 
 x_train_, x_test_, y_train_, y_test_, _ = my_train_test_split(teston_)
 
@@ -27,16 +28,16 @@ def makeModel(participant, teston, method, test, x_train, x_test, y_train, y_tes
         name = 'models/NonDeep/decisionTree{}.sav'.format(participant)
 
         if not test:
-            model = tree.DecisionTreeClassifier()
+            model = sklearn.tree.DecisionTreeClassifier()
             model.fit(x_train, y_train)
-
+            
             pickle.dump(model, open(
                 name, 'wb'))
 
             visualise = input("save fig? y/n: ")
             if visualise.lower().strip() == 'y' or visualise.lower().strip() == 'yes':
-                fig = plt.figure()
-                _ = tree.plot_tree(model, filled=True)
+                fig = plt.figure(figsize=(20,20))
+                _ = sklearn.tree.plot_tree(model, filled=True)
                 fig.savefig(
                     'models/NonDeep/decisionTree{}.png'.format(participant))
 
@@ -255,11 +256,11 @@ def makeModel(participant, teston, method, test, x_train, x_test, y_train, y_tes
 
 if __name__ == "__main__":
     lst = []
-    for i in range(1, 100):
-        try:
-            x_train_, x_test_, y_train_, y_test_, _ = my_train_test_split(i)
-            lst.append(makeModel(participant_, i, method_, True, x_train_, x_test_, y_train_, y_test_))
-        except:
-            pass
+    for i in trange(1, 2):
+        # try:
+        x_train_, x_test_, y_train_, y_test_, _ = my_train_test_split(i)
+        lst.append(makeModel(participant_, i, method_, test_, x_train_, x_test_, y_train_, y_test_))
+        # except:
+        #     pass
     
     print(lst)
