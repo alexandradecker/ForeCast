@@ -39,9 +39,8 @@ def addPupilDeviation(participant):
         num_rows = table["avg_pupil"].shape[0]
         avg_pupil_size = total_pupil_size / num_rows
         pupil_deviation = table["avg_pupil"] - avg_pupil_size
-        # pd.concat([table, pupil_deviation], axis=1, ignore_index=True)
-        # table = table[table.columns.tolist()[1:]]
         table["pupil_deviation"] = pupil_deviation
+        table["pupil_deviation_percentage"] = pupil_deviation/avg_pupil_size
 
         table.to_csv("bigTable/" + num + ".csv")
     except Exception as e:
@@ -56,9 +55,8 @@ def addResponseDeviation(participant):
         num_rows = table["rt"].shape[0]
         avg_rt = total_pupil_size / num_rows
         rt_deviation = table["rt"] - avg_rt
-        # pd.concat([table, pupil_deviation], axis=1, ignore_index=True)
-        # table = table[table.columns.tolist()[1:]]
         table["rt_deviation"] = rt_deviation
+        table["rt_deviation_percentage"] = rt_deviation/avg_rt
 
         table.to_csv("bigTable/" + num + ".csv")
     except Exception as e:
@@ -86,8 +84,8 @@ if __name__ == "__main__":
     warnings.filterwarnings('ignore')
 
     jobs = multiprocessing.cpu_count()
-    # pqdm(range(1, 100), work, n_jobs=jobs)
-    # pqdm(range(1, 100), addPupilDeviation, n_jobs=jobs)
-    # pqdm(range(1, 100), addResponseDeviation, n_jobs=jobs)
-    # aggregateBigTables()
+    pqdm(range(1, 100), work, n_jobs=jobs)
+    pqdm(range(1, 100), addPupilDeviation, n_jobs=jobs)
+    pqdm(range(1, 100), addResponseDeviation, n_jobs=jobs)
+    aggregateBigTables()
     pass
