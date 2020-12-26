@@ -10,25 +10,34 @@ from xgboost import XGBClassifier
 import matplotlib.pyplot as plt
 import pickle
 from train_test_split import my_train_test_split
+from functools import partial
+import os
 
 methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
 method_ = methods[0]
 
-def test(participant, model):
-    x_train, _, y_train, _, _ = my_train_test_split(participant=participant, test_percentage=0)
-    predictions = model.predict(x_train)
-    loss_array = abs(predictions - y_test)
-    total = len(loss_array)
+def test(model, item):
+    try:
+        x_train, _, y_train, _, _ = my_train_test_split(participant=item, test_percentage=1)
+        predictions = model.predict(x_train)
+        loss_array = abs(predictions - y_train)
+        total = len(loss_array)
 
-    incorrect = sum(loss_array)
-    accuracy = (total - incorrect) / total
+        incorrect = sum(loss_array)
+        accuracy = (total - incorrect) / total
 
-    #WRITE ACCURACY TO FILE OR SOMETHING
+        return accuracy
+    except Exception as e:
+        print(e)
+
 
 def crossVal(method, load_model=False):
     for i in trange(1,100):
-        if not load_model:
-            x_train, _, y_train, _, _ = my_train_test_split(participant=i, test_percentage=0)
+        try:
+            if not load_model:
+                x_train, _, y_train, _, _ = my_train_test_split(participant=i, test_percentage=1)
+        except:
+            continue
 
         if method == "decision_tree":
             name = 'models/NonDeep/decisionTree{}.sav'.format(i)
@@ -48,9 +57,16 @@ def crossVal(method, load_model=False):
         else:
             model.fit(x_train, y_train)
         
-        pqdm(range(1,100), test, n_jobs=os.cpu_count())
+        func = partial(test, model)
+        accuracy = pqdm(range(1,100), func, n_jobs=os.cpu_count())
+        accuracy = [a for a in accuracy if a]
+        print(accuracy)
+        with open("testResults/{}.txt".format(i), 'w') as f:
+            if len(accuracy) > 0:
+                f.write(str(sum(accuracy)/len(accuracy)) + "\n\n\n")
+                f.write('\n'.join([' '.join(j) for j in accuracy]))
 
 
 
 if __name__ == '__main__':
-    
+    crossVal(method_)
