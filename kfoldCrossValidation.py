@@ -28,7 +28,7 @@ def test(model, item):
 
         return accuracy
     except Exception as e:
-        print(e)
+        pass
 
 
 def crossVal(method, load_model=False):
@@ -55,16 +55,20 @@ def crossVal(method, load_model=False):
         if load_model:
             model = pickle.load(open(name, 'rb'))
         else:
-            model.fit(x_train, y_train)
+            try:
+                model.fit(x_train, y_train) #THIS TRY EXCEPT BLOCK SHOULDNT BE THERE BUT THE 14th PARTICIPANT DATA IS INCONSISTENT
+            except:
+                continue
         
         func = partial(test, model)
         accuracy = pqdm(range(1,100), func, n_jobs=os.cpu_count())
         accuracy = [a for a in accuracy if a]
-        print(accuracy)
+      
         with open("testResults/{}.txt".format(i), 'w') as f:
             if len(accuracy) > 0:
                 f.write(str(sum(accuracy)/len(accuracy)) + "\n\n\n")
-                f.write('\n'.join([' '.join(j) for j in accuracy]))
+                for line in accuracy:
+                    f.write(str(line) + "\n")
 
 
 
