@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 
-def my_train_test_split(participant=None):
+def my_train_test_split(participant=None, test_percentage=0.3):
     if participant is None:
         df = pd.read_csv("bigTable/allParticipantsTable.csv")
     else:
@@ -29,7 +29,7 @@ def my_train_test_split(participant=None):
     y = np.asarray(y)
 
     x_train, x_test, y_train, y_test = train_test_split(
-        x, y, test_size=0.3, random_state=6)
+        x, y, test_size=test_percentage, random_state=6)
 
     assert len(x_train) == len(y_train)
     assert len(x_test) == len(y_test)
