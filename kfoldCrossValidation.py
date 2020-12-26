@@ -13,8 +13,8 @@ from train_test_split import my_train_test_split
 from functools import partial
 import os
 
-methods = ["decision_tree", "random_forest", "adaboost", "xgboost", "all"]
-method_ = methods[0]
+methods = ["decision_tree", "random_forest", "adaboost", "xgboost"]
+method_ = methods[3]
 
 def test(model, item):
     try:
@@ -47,9 +47,9 @@ def crossVal(method, load_model=False):
             model = None if load_model else RandomForestClassifier(n_estimators=7, n_jobs=os.cpu_count())
         elif method == "adaboost":
             name = 'models/NonDeep/adaboost{}.sav'.format(i)
-            model = None if load_model else AdaBoostClassifier(n_estimators=i, random_state=6)
+            model = None if load_model else AdaBoostClassifier(n_estimators=7, random_state=6)
         elif method == "xgboost":
-            name = 'models/NonDeep/xgboost{}.sav'.format(participant)
+            name = 'models/NonDeep/xgboost{}.sav'.format(i)
             model = None if load_model else XGBClassifier(n_jobs=os.cpu_count(), random_state=6)
 
         if load_model:
@@ -64,7 +64,7 @@ def crossVal(method, load_model=False):
         accuracy = pqdm(range(1,100), func, n_jobs=os.cpu_count())
         accuracy = np.array([a for a in accuracy if a])
       
-        with open("testResults/{}.txt".format(i), 'w') as f:
+        with open("testResults/{}/{}.txt".format(method, i), 'w') as f:
             if len(accuracy) > 0:
                 f.write("Accuracy: " + str(np.average(accuracy)) + "\n")
                 f.write("Variance: " + str(np.var(accuracy)) + "\n")
