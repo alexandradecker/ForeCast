@@ -62,11 +62,13 @@ def crossVal(method, load_model=False):
         
         func = partial(test, model)
         accuracy = pqdm(range(1,100), func, n_jobs=os.cpu_count())
-        accuracy = [a for a in accuracy if a]
+        accuracy = np.array([a for a in accuracy if a])
       
         with open("testResults/{}.txt".format(i), 'w') as f:
             if len(accuracy) > 0:
-                f.write(str(sum(accuracy)/len(accuracy)) + "\n\n\n")
+                f.write("Accuracy: " + str(np.average(accuracy)) + "\n")
+                f.write("Variance: " + str(np.var(accuracy)) + "\n")
+                f.write("Standard Deviation: " + str(np.std(accuracy)) + "\n\n")
                 for line in accuracy:
                     f.write(str(line) + "\n")
 
