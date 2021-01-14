@@ -21,7 +21,7 @@ def createTimeSeriesPercentage(n):
             newTable['percentageSize'][i]  = rawPupil['Pupil'][i]/avgPupil['avg_preceding_pupil'][subject]
     
     #DROP NONE VALUES AND SHIT
-    newTable.to_csv("newTable.csv")
+    newTable.to_csv("newTable.csv") #DELETE THIS FILE
     print(newTable)
 
 
