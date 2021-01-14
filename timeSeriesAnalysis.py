@@ -13,12 +13,15 @@ def createTimeSeriesPercentage(n):
     avgPupil = pd.read_csv("pupil_final/" + participant + "_Merged.csv")
     newTable = rawPupil[['Subject', 'Trial', 'Time']].copy()
     newTable['percentageSize'] = None
-    for i in range(1, newTable.shape[0] + 1):
+    for i in range(1, newTable.shape[0]):
         subject = int(rawPupil['Subject'][i])
         if 1 <= rawPupil['Time'][i] <=2:
             newTable['percentageSize'][i]  = rawPupil['Pupil'][i]/avgPupil['avg_pupil'][subject]
         elif -3 <= rawPupil['Time'][i] <= 0:
             newTable['percentageSize'][i]  = rawPupil['Pupil'][i]/avgPupil['avg_preceding_pupil'][subject]
+    
+    #DROP NONE VALUES AND SHIT
+    newTable.to_csv("newTable.csv")
     print(newTable)
 
 
