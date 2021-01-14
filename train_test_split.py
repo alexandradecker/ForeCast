@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 
-def my_train_test_split(participant=None, test_percentage=0.3):
+def my_train_test_split(participant=None, test_percentage=0.2):
     if participant is None:
         df = pd.read_csv("bigTable/allParticipantsTable.csv")
     else:
